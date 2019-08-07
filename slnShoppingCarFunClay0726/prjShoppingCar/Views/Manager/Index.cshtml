@@ -1,0 +1,42 @@
+﻿@model IEnumerable<prjShoppingCar.Models.tMember>
+
+@{
+    ViewBag.Title = "會員資料";
+}
+
+<h2>會員資料列表</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.fUserId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fEmail)
+        </th>
+        <th>編輯/刪除</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.fUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fEmail)
+            </td>
+            <td>
+                @Html.ActionLink("Edit","Edit", new { id=item.fId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.fId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+            </td>
+        </tr>
+    }
+
+</table>
