@@ -9,10 +9,8 @@ namespace prjShoppingCar.Controllers
 {
     public class ManagerController : Controller
     {
-
         dbShoppingCarEntities db = new dbShoppingCarEntities();
 
-        // GET: Member
         public ActionResult Index()
         {
             var manager = (tMember)(Session["Member"]);
@@ -27,34 +25,31 @@ namespace prjShoppingCar.Controllers
             return View("Index", "_LayoutManager", members);
         }
 
-        //Get: MemberManager/Login
         public ActionResult ManagerLogin()
         {
             return View();
         }
 
-        //Post: Home/Login
+        //Post: Home/網頁管理人登入
         [HttpPost]
         public ActionResult ManagerLogin(string fUserId, string fPwd)
         {
-            // 依帳密取得會員並指定給member
             var member = db.tMember
                 .Where(m => m.fUserId == fUserId && m.fUserId == "Manager" && m.fPwd == fPwd)
                 .FirstOrDefault();
-            //若member為null，表示會員未註冊
+
             if (member == null)
             {
                 ViewBag.Message = "帳密錯誤，登入失敗";
                 return View();
             }
-            //使用Session變數記錄歡迎詞
             Session["WelCome Member"] = member.fName + "歡迎光臨";
-            //使用Session變數記錄登入的會員物件
             Session["Member"] = member;
-            //執行Home控制器的Index動作方法
+
             return RedirectToAction("Index");
         }
 
+        //刪除會員
         public ActionResult Delete(int id)
         {
             var removeMember = db.tMember.Where(m => m.fId == id).FirstOrDefault();
@@ -63,6 +58,7 @@ namespace prjShoppingCar.Controllers
             return RedirectToAction("Index");
         }
 
+        //修改會員資料
         public ActionResult Edit(int id)
         {
             var todo = db.tMember.Where(m => m.fId == id).FirstOrDefault();
@@ -88,14 +84,12 @@ namespace prjShoppingCar.Controllers
             return View("ManagerOrderList", "_LayoutManager", orders);
         }
 
-        //Get:Index/OrderDetail
+        //訂單明細
         public ActionResult ManagerOrderDetail(string fOrderGuid)
         {
-            //根據fOrderGuid找出和訂單主檔關聯的訂單明細，並指定給orderDetails
             var orderDetails = db.tOrderDetail
                 .Where(m => m.fOrderGuid == fOrderGuid).ToList();
-            //目前訂單明細
-            //指定OrderDetail.cshtml套用_LayoutMember.cshtml，View使用orderDetails模型
+
             return View("ManagerOrderDetail", "_LayoutManager", orderDetails);
         }
 
@@ -105,6 +99,7 @@ namespace prjShoppingCar.Controllers
             return View(todo);
         }
 
+        //網頁管理人明細編輯
         [HttpPost]
         public ActionResult EditManagerOrderList(string fOrderGuid, string fReceiver, string fEmail, string fAddress)
         {
@@ -116,6 +111,7 @@ namespace prjShoppingCar.Controllers
             return RedirectToAction("ManagerOrderList");
         }
 
+        //網頁管理人刪除訂單
         public ActionResult DeleteManagerOrderList(string fOrderGuid)
         {
             var removeOrder = db.tOrder.Where(m => m.fOrderGuid == fOrderGuid).FirstOrDefault();
